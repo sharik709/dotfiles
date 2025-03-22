@@ -30,3 +30,5 @@ for setup in "${setups[@]}"
 do
     setUpSymlink $setup;
 done
+
+ln -s $(pwd)/nvim $HOME/.config/
