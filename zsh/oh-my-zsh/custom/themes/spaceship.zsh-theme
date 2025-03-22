@@ -1,0 +1,1 @@
+/Users/sharik.shaikh/projects/dotfiles/zsh/oh-my-zsh/custom/themes/spaceship-prompt/spaceship.zsh-theme
