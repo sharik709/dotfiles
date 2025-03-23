@@ -38,6 +38,7 @@ return {
     opts = function(_, opts)
       table.insert(opts.sources, { name = "emoji" })
     end,
+    enabled = false,
   },
 
   -- change some telescope options and a keymap to browse plugin files

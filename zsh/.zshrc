@@ -74,3 +74,41 @@ fpath=(~/.zsh/completion $fpath)
 # NVM is node version manager
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+
+# FZF Configuration for macOS
+# Makes fzf faster by excluding system directories and prettier with nice colors
+# Use the 'fo' command to open files in vim if editable, otherwise in Finder
+#
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Use fd for better performance if available
+if command -v fd > /dev/null; then
+  export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git --exclude node_modules --exclude Library --exclude System --exclude .Trash --exclude .cache --exclude .npm --exclude .vscode --exclude .DS_Store --exclude Applications'
+else
+  # Fallback to find with exclusions
+  export FZF_DEFAULT_COMMAND='find . -type f -not -path "*/\.*" -not -path "*/node_modules/*" -not -path "*/Library/*" -not -path "*/System/*" -not -path "*/.Trash/*" -not -path "*/.cache/*" -not -path "*/.npm/*" -not -path "*/.vscode/*" -not -path "*/Applications/*"'
+fi
+
+# Visual configuration with nice colors (Dracula theme)
+export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border --info=inline --prompt='❯ ' --pointer='❯' --marker='✓' --preview 'cat {} 2>/dev/null | head -500 || ls -la {}' --preview-window=right:60%:wrap --bind 'ctrl-/:toggle-preview' --color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9 --color=fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9 --color=info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6 --color=marker:#ff79c6,spinner:#ffb86c,header:#6272a4"
+
+# Function to open file with vim if text, otherwise with Finder
+fzf-open() {
+  local file
+  file=$(fzf --query="$1" --select-1 --exit-0)
+  if [[ -n "$file" ]]; then
+    if [[ -f "$file" ]] && file --mime "$file" | grep -q "text\|empty\|json\|xml\|yaml\|csv\|markdown\|script"; then
+      vim "$file"
+    else
+      open "$file"
+    fi
+  fi
+}
+
+# Create alias for easier use
+alias fo='fzf-open'
+
+# Configure key bindings for better experience
+export FZF_ALT_C_OPTS="--preview 'ls -la {}'"
+export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap --bind 'ctrl-/:toggle-preview'"
